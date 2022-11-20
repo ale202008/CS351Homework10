@@ -211,22 +211,48 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 	
 	@Override // implementation
 	public boolean containsKey(Object o) {
+		if (findKey(o) == null) return false;
 		return true;
 	}
 	
-	@Override // implementation
+	@Override // efficiency
 	public V get(Object o){
-		return null;
+		V i = null;
+		if (findKey(o) != null) {
+			i = findKey(o).getValue();
+		}
+		return i;
 	}
 	
 	@Override // efficiency
 	public void clear() {
 		dummy.left = null;
+		numItems = 0;
+		version++;
 	}
+	
+	private void doPut(K k, V v) {
+		
+	}
+	
 	
 	@Override // implementation
 	public V put(K k, V v) {
-		return null;
+		assert wellFormed() : "wellFormed failed at start of put";
+		if (k == null) throw new NullPointerException();
+		V val = null;
+		
+		if (containsKey(k)) {
+			val = findKey(k).getValue();
+			findKey(k).setValue(v);
+		}
+		else {
+			
+		}
+		
+		
+		assert wellFormed() : "wellFormed failed at end of put";
+		return val;
 	}
 	
 	@Override // implementation
@@ -257,7 +283,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		@Override
 		public int size() {
 			// TODO: Easy: delegate to TreeMap.size()
-			return 0;
+			return TreeMap.this.size();
 		}
 
 		@Override
@@ -276,6 +302,8 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			// N.B. You can't check whether the key is of the correct type
 			// because K is a generic type parameter.  So you must handle any
 			// Object similarly to how "get" does.
+			if (!(o instanceof Entry<?, ?>)) return false;
+			
 			return true;
 		}
 
@@ -290,6 +318,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		@Override
 		public void clear() {
 			// TODO: Easy: delegate to the TreeMap.clear()
+			TreeMap.this.clear();
 		}
 	}
 
