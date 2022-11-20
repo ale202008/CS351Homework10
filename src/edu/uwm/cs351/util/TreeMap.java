@@ -170,7 +170,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		K key = asKey(o);
 		if (key == null) return null;
 		
-		Node i = dummy.left;
+		Node<K, V> i = dummy.left;
 		while (i != null) {
 			int c = comparator.compare(key, asKey(i.key));
 			if (c == 0) return i;
@@ -268,6 +268,28 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			//     (a) current should either be null or a non-dummy node in the tree
 			//     (b) next should never be null and should be in the tree (maybe dummy).
 			//     (c) if current is not null, make sure it is the last node before where next is.
+			
+			//Invariant 1
+			if (!TreeMap.this.wellFormed()) return false;
+			
+			if (colVersion == version) {
+				//Invariant 2
+				if (current != null && TreeMap.this.findKey(current.key) == null) return report("current not in TreeMap");
+				
+				//Invariant 3
+				if (next == null) {
+					return report("next is null");
+				}
+				else {
+					if (next != dummy && TreeMap.this.findKey(next.key) == null) {
+						return report("next is not equal to dummy and not in TreeMap");
+					}
+				}
+				
+				//Invariant 4
+				if (current != null && current != next.parent) return report("current is not next's parent");
+			}
+			
 			return true;
 		}
 		
