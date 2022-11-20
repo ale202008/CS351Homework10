@@ -58,7 +58,6 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 	/*
 	 * Have correct parents
 	 * Keys that are never null
-	 * Correctly sorted given the comparator
 	 * Between the lower and upper bounds (exclusive)
 	 */
 	private boolean checkInRange(Node<K,V> node, Node<K, V> p, K lower, K upper) {
@@ -68,14 +67,21 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		if (node.key == null) {
 			return false;
 		}
+		if (lower != null && comparator.compare(lower, node.key) >= 0) {
+			return false;
+		}
+		if (upper != null && comparator.compare(upper, node.key) <= 0) {
+			return false;
+		}
+			
 		
 		if (node.right != null) {
-			checkInRange(node.right, node, lower, upper);
+			return checkInRange(node.right, node, node.key, upper);
 		}
 		if (node.left != null) {
-			checkInRange(node.left, node, lower, upper);
+			return checkInRange(node.left, node, lower, node.key);
 		}
-		
+
 		
 		return true; // TODO
 	}
@@ -89,6 +95,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		if (r == null) return 0;
 		return 1 + countNodes(r.left) + countNodes(r.right);
 	}
+	
 	
 	/**
 	 * Check the invariant, printing a message if not satisfied.
@@ -106,7 +113,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		
 		//Invariant 1
 		if (comparator == null) return report("comparator is null");
-		
+			
 		//Invariant 2
 		if (dummy == null) return report("dummy is null");
 		
