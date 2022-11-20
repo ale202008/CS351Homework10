@@ -54,8 +54,30 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 	 * @return whether the subtree is fine.  If false is 
 	 * returned, there is a problem, which has already been reported.
 	 */
+	
+	/*
+	 * Have correct parents
+	 * Keys that are never null
+	 * Correctly sorted given the comparator
+	 * Between the lower and upper bounds (exclusive)
+	 */
 	private boolean checkInRange(Node<K,V> node, Node<K, V> p, K lower, K upper) {
-		return false; // TODO
+		if (node.parent != p) {
+			return false;
+		}
+		if (node.key == null) {
+			return false;
+		}
+		
+		if (node.right != null) {
+			checkInRange(node.right, node, lower, upper);
+		}
+		if (node.left != null) {
+			checkInRange(node.left, node, lower, upper);
+		}
+		
+		
+		return true; // TODO
 	}
 	
 	/**
@@ -83,20 +105,19 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		// "checkInRange" will help with 4,5
 		
 		//Invariant 1
-		if (comparator == null) return false;
-		
+		if (comparator == null) return report("comparator is null");
 		
 		//Invariant 2
-		if (dummy == null) return false;
+		if (dummy == null) return report("dummy is null");
 		
 		//Invariant 3
-		if (dummy.key != null || dummy.right != null || dummy.parent != null) return false;
+		if (dummy.key != null || dummy.right != null || dummy.parent != null) return report("dummy is not correct");
 		
 		//Invariant 4 + 5
-		if (!checkInRange(dummy.right, dummy.right.parent, null, null)) return false;
+		if (dummy.left != null && !checkInRange(dummy.left, dummy, null, null)) return report("checkInRange not good");
 		
 		//Invariant 6
-		if (countNodes(dummy.right) != numItems) return false;
+		if (countNodes(dummy.left) != numItems) return report("countNodes does not equal numItems");
 		
 		return true;
 	}
