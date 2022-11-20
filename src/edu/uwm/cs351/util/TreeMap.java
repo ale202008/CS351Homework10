@@ -203,6 +203,36 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 	// plus any private helper methods.
 	// Our solution has getNode(Object)
 	// Increase version if data structure if modified.
+	
+	@Override // implementation
+	public int size() {
+		return numItems;
+	}
+	
+	@Override // implementation
+	public boolean containsKey(Object o) {
+		return true;
+	}
+	
+	@Override // implementation
+	public V get(Object o){
+		return null;
+	}
+	
+	@Override // efficiency
+	public void clear() {
+		dummy.left = null;
+	}
+	
+	@Override // implementation
+	public V put(K k, V v) {
+		return null;
+	}
+	
+	@Override // implementation
+	public V remove(Object o) {
+		return null;
+	}
 
 	
 	private volatile Set<Entry<K,V>> entrySet;
