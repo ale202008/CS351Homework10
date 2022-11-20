@@ -67,7 +67,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		if (r == null) return 0;
 		return 1 + countNodes(r.left) + countNodes(r.right);
 	}
-		
+	
 	/**
 	 * Check the invariant, printing a message if not satisfied.
 	 * @return whether invariant is correct
@@ -81,6 +81,23 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		// 5. check that all nodes have correct parents
 		// 6. check that number of items matches number of (non-dummy) nodes
 		// "checkInRange" will help with 4,5
+		
+		//Invariant 1
+		if (comparator == null) return false;
+		
+		
+		//Invariant 2
+		if (dummy == null) return false;
+		
+		//Invariant 3
+		if (dummy.key != null || dummy.right != null || dummy.parent != null) return false;
+		
+		//Invariant 4 + 5
+		if (!checkInRange(dummy.right, dummy.right.parent, null, null)) return false;
+		
+		//Invariant 6
+		if (countNodes(dummy.right) != numItems) return false;
+		
 		return true;
 	}
 	
@@ -155,6 +172,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		@Override
 		public int size() {
 			// TODO: Easy: delegate to TreeMap.size()
+			return 0;
 		}
 
 		@Override
@@ -173,6 +191,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			// N.B. You can't check whether the key is of the correct type
 			// because K is a generic type parameter.  So you must handle any
 			// Object similarly to how "get" does.
+			return true;
 		}
 
 		@Override
@@ -180,6 +199,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			// TODO: if the tree doesn't contain x, return false
 			// otherwise do a TreeMap remove.
 			// make sure that the invariant is true before returning.
+			return true;
 		}
 		
 		@Override
@@ -224,6 +244,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		public boolean hasNext() {
 			assert wellFormed() : "invariant broken before hasNext()";
 			// TODO: easy!
+			return true;
 		}
 
 		public Entry<K, V> next() {
