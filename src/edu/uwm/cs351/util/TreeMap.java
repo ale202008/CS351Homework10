@@ -11,6 +11,11 @@ import java.util.function.Consumer;
 
 import junit.framework.TestCase;
 
+/*
+ * Andrew Le
+ * Homework 10, CS 351
+ */
+
 public class TreeMap<K,V>  extends AbstractMap<K,V> {
 
 	// Here is the data structure to use.
@@ -143,6 +148,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		// TODO
 		// Update the parameter comparator if necessary
 		// Create the dummy node.
+		
 		assert wellFormed() : "invariant broken after constructor(Comparator)";
 	}
 
@@ -261,6 +267,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		Node<K, V> current, next;
 		int colVersion = version;
 		
+		
 		boolean wellFormed() {
 			// TODO: See Homework description for more details.  Here's a summary:
 			// (1) check the outer wellFormed()
@@ -285,9 +292,9 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 						return report("next is not equal to dummy and not in TreeMap");
 					}
 				}
-				
 				//Invariant 4
-				if (current != null && current != next.parent) return report("current is not next's parent");
+
+					
 			}
 			
 			return true;
