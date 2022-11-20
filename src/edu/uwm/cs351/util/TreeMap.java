@@ -167,7 +167,20 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 	 * or null if no nodes in the tree have this property.
 	 */
 	private Node<K, V> findKey(Object o){
-		return null; // TODO (non-recursive is fine)
+		K key = asKey(o);
+		if (key == null) return null;
+		
+		Node i = dummy.left;
+		while (i != null) {
+			int c = comparator.compare(key, asKey(i.key));
+			if (c == 0) return i;
+			if (c > 0) i = i.right;
+			else {
+				i = i.left;
+			}
+		}
+		
+		return i; // TODO (non-recursive is fine)
 	}
 
 	// TODO: many methods to override here:
