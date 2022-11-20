@@ -144,11 +144,19 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		assert wellFormed() : "invariant broken after constructor()";
 	}
 	
+	@SuppressWarnings("unchecked") // for comparator creation
 	public TreeMap(Comparator<K> c) {
 		// TODO
 		// Update the parameter comparator if necessary
 		// Create the dummy node.
-		
+		if (c == null) {
+			comparator = (a, b) -> ((Comparable<K>) a).compareTo(b);
+		}
+		else {
+			comparator = c;
+		}
+		dummy = new Node<K, V>(null, null);
+	
 		assert wellFormed() : "invariant broken after constructor(Comparator)";
 	}
 
@@ -307,7 +315,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 						}
 						i = i.parent;
 					}
-					if (current != i) return report("a1");
+					if (current != i) return report("current is not before next");
 				}
 				
 			}
