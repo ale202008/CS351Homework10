@@ -293,8 +293,23 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 					}
 				}
 				//Invariant 4
-
-					
+				if (current != null) {
+					Node<K, V> i = next;
+					if (i.left != null) {
+						i = i.left;
+						while (i.right != null) {
+							i = i.right;
+						}
+					}
+					else {
+						while (comparator.compare(i.parent.key, next.key) > 0){
+							i = i.parent;
+						}
+						i = i.parent;
+					}
+					if (current != i) return report("a1");
+				}
+				
 			}
 			
 			return true;
