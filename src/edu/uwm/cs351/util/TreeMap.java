@@ -231,8 +231,18 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		version++;
 	}
 	
-	private void doPut(K k, V v) {
+	private Node<K, V> doPut(Node<K, V> r, Node<K, V> p, K k, V v) {
+		if (r == null) return new Node(k, v);
+		if (comparator.compare(r.key, k) >= 0) {
+			r.right = doPut(r.right, r, k, v);
+		}
+		else {
+			r.left = doPut(r.left, r, k, v);
+		}
 		
+		r.parent = p;
+		
+		return r;
 	}
 	
 	
@@ -247,9 +257,11 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			findKey(k).setValue(v);
 		}
 		else {
-			
+			dummy.left = doPut(dummy.left, dummy, k, v);
+			numItems++;
 		}
 		
+		version++;
 		
 		assert wellFormed() : "wellFormed failed at end of put";
 		return val;
