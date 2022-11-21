@@ -211,6 +211,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 	
 	@Override // implementation
 	public boolean containsKey(Object o) {
+		assert wellFormed() : "wellFormed failed at the start of containsKey";
 		if (findKey(o) == null) return false;
 		return true;
 	}
@@ -237,7 +238,6 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			r.parent = p;
 			return r;
 		}
-		
 		
 		if (comparator.compare(r.key, k) < 0) {
 			r.right = doPut(r.right, r, k, v);
@@ -269,6 +269,16 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		
 		assert wellFormed() : "wellFormed failed at end of put";
 		return val;
+	}
+	
+	private Node<K, V> doRemove(Node<K, V> r, Node<K, V> p, Node<K, V> target){
+		if (r == target) {
+			if (r.left == null) return r.right;
+			if (r.right == null) return r.left;
+			
+			
+		}
+		return r;
 	}
 	
 	@Override // implementation
