@@ -227,6 +227,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 	
 	@Override // efficiency
 	public void clear() {
+		if (numItems == 0) return;
 		dummy.left = null;
 		numItems = 0;
 		version++;
