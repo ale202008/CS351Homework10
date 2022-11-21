@@ -232,6 +232,17 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		version++;
 	}
 	
+	private Node<K, V> getNode(Object o){
+		return findKey(o);
+	}
+	
+	private Node<K, V> firstInTree(Node<K, V> r){
+		while (r.left != null) {
+			r = r.left;
+		}
+		return r;
+	}
+	
 	private Node<K, V> doPut(Node<K, V> r, Node<K, V> p, K k, V v) {
 		if (r == null) { 
 			r = new Node<K, V>(k, v);
@@ -276,22 +287,22 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			if (r.left == null) return r.right;
 			if (r.right == null) return r.left;
 			
-			Node<K, V> leftMost = r.left;
-			while (leftMost.left != null) {
-				leftMost = leftMost.left;
+			Node<K, V> t = firstInTree(r.right);
+			t.right = doRemove(r.right, r, t);
+			t.left = r.left;
+			t.left.parent = t;
+			t.parent = p;
+			r = t;
+		}
+		else if (r != null){
+			if (comparator.compare(target.key, r.key) < 0) {
+				r.left = doRemove(r.right, r, target);
 			}
-			
-			leftMost.right = doRemove(r.right, r, leftMost);
-			leftMost.left = r.left;
-			leftMost.parent = p;
-			r = leftMost;
+			else {
+				r.right = doRemove(r.left, r, target);
+			}
 		}
-		else if (comparator.compare(target.key, r.key) < 0) {
-			r.left = doRemove(r.left, r, target);
-		}
-		else {
-			r.right = doRemove(r.right, r, target);
-		}
+
 		return r;
 	}
 	
@@ -300,13 +311,13 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		assert wellFormed() : "wellFormed failed in remove(main) start";
 		if (findKey(o) == null) return null;
 		
-
-		dummy.left = doRemove(dummy.left, dummy, findKey(o));
+		Node<K, V> i = getNode(o);
+		dummy.left = doRemove(dummy.left, dummy, i);
 		numItems--;
 		version++;
 		
 		assert wellFormed() : "wellFormed failed in remove(main) end";
-		return null;
+		return i.getValue();
 	}
 
 	
@@ -358,7 +369,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			
 			if (!TreeMap.this.containsKey(temp.getKey())) return false;
 			
-			if (!TreeMap.this.findKey(temp.getKey()).equals(o)) return false;
+			if (!TreeMap.this.getNode(temp.getKey()).equals(o)) return false;
 			
 			return true;
 		}
@@ -449,11 +460,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		
 		MyIterator() {
 			// TODO: initialize next to the leftmost node
-			Node<K, V> i = dummy;
-			while (i.left != null) {
-				i = i.left;
-			}
-			next = i;
+			next = TreeMap.this.firstInTree(dummy);
 			assert wellFormed() : "invariant broken after iterator constructor";
 		}
 		
@@ -464,7 +471,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		public boolean hasNext() {
 			assert wellFormed() : "invariant broken before hasNext()";
 			// TODO: easy!
-			return true;
+			return next != dummy;
 		}
 
 		public Entry<K, V> next() {
@@ -472,6 +479,15 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			// TODO
 			// We don't use (non-existent)nextInTree: 
 			// but rather parent pointers in the second case.
+			if (!hasNext()) throw new NoSuchElementException("no more");
+			checkVersion();
+			
+			current = next;
+			if (current.right != null) {
+				next = firstInTree(current.right);
+			}
+			
+			
 			assert wellFormed() : "invariant broken at end of next()";
 			return current;
 		}
