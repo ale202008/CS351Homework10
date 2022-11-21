@@ -273,10 +273,10 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		}
 		else {
 			dummy.left = doPut(dummy.left, dummy, k, v);
+			version++;
 			numItems++;
 		}
 		
-		version++;
 		
 		assert wellFormed() : "wellFormed failed at end of put";
 		return val;
@@ -300,9 +300,14 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			Node<K, V> t = firstInTree(r.right);
 			t.right = doRemove(r.right, r, t);
 			t.left = r.left;
-			t.left.parent = t;
 			t.parent = p;
 			r = t;
+			if (r.right != null) {
+				r.right.parent = r;
+			}
+			if (r.left != null) {
+				r.left.parent = r;
+			}
 		}
 		else if (r != null){
 			if (comparator.compare(target.key, r.key) < 0) {
@@ -389,6 +394,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			// otherwise do a TreeMap remove.
 			// make sure that the invariant is true before returning.
 			assert wellFormed() : "wellFormed failed at the beginning of remove(EntrySet)";
+			if (!(x instanceof Entry<?, ?>)) return false;
 			
 			Entry<?, ?> temp = (Entry<?, ?>) x;
 			if (!TreeMap.this.containsKey(temp.getKey())) return false;
@@ -482,6 +488,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		public boolean hasNext() {
 			assert wellFormed() : "invariant broken before hasNext()";
 			// TODO: easy!
+			checkVersion();
 			return next != dummy;
 		}
 
@@ -526,6 +533,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			// After removal, record that there is nothing to remove any more.
 			// Handle versions.
 			if (current == null) throw new IllegalStateException();
+			checkVersion();
 			
 			TreeMap.this.remove(current.key);
 			
