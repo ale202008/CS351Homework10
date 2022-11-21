@@ -232,15 +232,19 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 	}
 	
 	private Node<K, V> doPut(Node<K, V> r, Node<K, V> p, K k, V v) {
-		if (r == null) return new Node(k, v);
-		if (comparator.compare(r.key, k) >= 0) {
+		if (r == null) { 
+			r = new Node<K, V>(k, v);
+			r.parent = p;
+			return r;
+		}
+		
+		
+		if (comparator.compare(r.key, k) < 0) {
 			r.right = doPut(r.right, r, k, v);
 		}
 		else {
 			r.left = doPut(r.left, r, k, v);
 		}
-		
-		r.parent = p;
 		
 		return r;
 	}
