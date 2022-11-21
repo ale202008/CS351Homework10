@@ -276,13 +276,36 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			if (r.left == null) return r.right;
 			if (r.right == null) return r.left;
 			
+			Node<K, V> leftMost = r.left;
+			while (leftMost.left != null) {
+				leftMost = leftMost.left;
+			}
 			
+			leftMost.right = doRemove(r.right, r, leftMost);
+			leftMost.left = r.left;
+			leftMost.parent = p;
+			r = leftMost;
+		}
+		else if (comparator.compare(target.key, r.key) < 0) {
+			r.left = doRemove(r.left, r, target);
+		}
+		else {
+			r.right = doRemove(r.right, r, target);
 		}
 		return r;
 	}
 	
 	@Override // implementation
 	public V remove(Object o) {
+		assert wellFormed() : "wellFormed failed in remove(main) start";
+		if (findKey(o) == null) return null;
+		
+
+		dummy.left = doRemove(dummy.left, dummy, findKey(o));
+		numItems--;
+		version++;
+		
+		assert wellFormed() : "wellFormed failed in remove(main) end";
 		return null;
 	}
 
