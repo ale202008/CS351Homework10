@@ -353,6 +353,13 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			// Object similarly to how "get" does.
 			if (!(o instanceof Entry<?, ?>)) return false;
 			
+			@SuppressWarnings("unchecked")
+			Entry<K, V> temp = (Entry<K, V>) o;
+			
+			if (!TreeMap.this.containsKey(temp.getKey())) return false;
+			
+			if (!TreeMap.this.findKey(temp.getKey()).equals(o)) return false;
+			
 			return true;
 		}
 
