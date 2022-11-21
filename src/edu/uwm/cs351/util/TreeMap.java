@@ -398,8 +398,8 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			if (!(x instanceof Entry<?, ?>)) return false;
 			
 			Entry<?, ?> temp = (Entry<?, ?>) x;
-			if (!TreeMap.this.containsKey(temp.getKey())) return false;
-			if (TreeMap.this.getNode(temp.getKey()).getValue() != temp.getValue()) return false;
+			if (!TreeMap.this.containsKey(temp.getKey())) return false;		
+			if (!x.equals(TreeMap.this.getNode(temp.getKey()))) return false;
 			TreeMap.this.remove(temp.getKey());
 			
 			assert wellFormed() : "wellFormed failed at the beginning of remove(EntrySet)";
