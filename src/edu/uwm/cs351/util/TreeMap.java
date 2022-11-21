@@ -374,8 +374,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			// Object similarly to how "get" does.
 			if (!(o instanceof Entry<?, ?>)) return false;
 			
-			@SuppressWarnings("unchecked")
-			Entry<K, V> temp = (Entry<K, V>) o;
+			Entry<?, ?> temp = (Entry<?, ?>) o;
 			
 			if (!TreeMap.this.containsKey(temp.getKey())) return false;
 			
@@ -391,8 +390,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			// make sure that the invariant is true before returning.
 			assert wellFormed() : "wellFormed failed at the beginning of remove(EntrySet)";
 			
-			@SuppressWarnings("unchecked")
-			Entry<K, V> temp = (Entry<K, V>) x;
+			Entry<?, ?> temp = (Entry<?, ?>) x;
 			if (!TreeMap.this.containsKey(temp.getKey())) return false;
 			if (TreeMap.this.getNode(temp.getKey()).getValue() != temp.getValue()) return false;
 			TreeMap.this.remove(temp.getKey());
@@ -500,7 +498,14 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			}
 			else {
 				if (next.right == null) {
-					next = next.parent;
+					Node<K, V> i = next;
+					while (i.parent != null) {
+						i = i.parent;
+						if (i != dummy && comparator.compare(next.key, i.key) < 0) {
+							break;
+						}
+					}
+					next = i;
 				}
 				else {
 					next = firstInTree(next.right);
