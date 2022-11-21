@@ -498,6 +498,14 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			if (current.right != null) {
 				next = firstInTree(current.right);
 			}
+			else {
+				if (next.right == null) {
+					next = next.parent;
+				}
+				else {
+					next = firstInTree(next.right);
+				}
+			}
 			
 			
 			assert wellFormed() : "invariant broken at end of next()";
