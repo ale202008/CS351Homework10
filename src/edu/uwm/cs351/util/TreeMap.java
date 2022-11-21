@@ -389,7 +389,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			return true;
 		}
 
-		@Override
+		@Override //implementation
 		public boolean remove(Object x) {
 			// TODO: if the tree doesn't contain x, return false
 			// otherwise do a TreeMap remove.
@@ -533,8 +533,8 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			// (See handout for details.)
 			// After removal, record that there is nothing to remove any more.
 			// Handle versions.
-			if (current == null) throw new IllegalStateException();
 			checkVersion();
+			if (current == null) throw new IllegalStateException();
 			
 			TreeMap.this.remove(current.key);
 			
