@@ -453,7 +453,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 						}
 					}
 					else {
-						while (comparator.compare(i.parent.key, next.key) > 0){
+						while (i.parent.key != null && comparator.compare(i.parent.key, next.key) > 0){
 							i = i.parent;
 						}
 						i = i.parent;
@@ -529,9 +529,12 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			
 			TreeMap.this.remove(current.key);
 			
-			current = next;
-			colVersion++;
+			current = null;
+			if (numItems == 0) {
+				next = dummy;
+			}
 			
+			colVersion = ++version;
 			assert wellFormed() : "invariant broken at end of iterator.remove()";
 		}
 		
