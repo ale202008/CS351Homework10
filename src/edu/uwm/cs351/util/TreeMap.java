@@ -339,7 +339,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 	
 	private volatile Set<Entry<K,V>> entrySet;
 	
-	@Override
+	@Override // required
 	public Set<Entry<K, V>> entrySet() {
 		assert wellFormed() : "invariant broken at beginning of entrySet";
 		if (entrySet == null) {
@@ -356,19 +356,19 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 	private class EntrySet extends AbstractSet<Entry<K,V>> {
 		// Do NOT add any fields! 
 		
-		@Override
+		@Override // implementation
 		public int size() {
 			// TODO: Easy: delegate to TreeMap.size()
 			return TreeMap.this.size();
 		}
 
-		@Override
+		@Override // implementation
 		public Iterator<Entry<K, V>> iterator() {
 			return new MyIterator();
 		}
 		
 		
-		@Override
+		@Override // efficiency
 		public boolean contains(Object o) {
 			assert wellFormed() : "Invariant broken at start of EntrySet.contains";
 			// TODO if o is not an entry (instanceof Entry<?,?>), return false
@@ -406,7 +406,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			return true;
 		}
 		
-		@Override
+		@Override // efficiency
 		public void clear() {
 			// TODO: Easy: delegate to the TreeMap.clear()
 			TreeMap.this.clear();
@@ -486,6 +486,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			if (version != colVersion) throw new ConcurrentModificationException("stale iterator");
 		}
 		
+		@Override // required
 		public boolean hasNext() {
 			assert wellFormed() : "invariant broken before hasNext()";
 			// TODO: easy!
@@ -493,6 +494,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			return next != dummy;
 		}
 
+		@Override // required
 		public Entry<K, V> next() {
 			assert wellFormed() : "invariant broken at start of next()";
 			// TODO
@@ -526,6 +528,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			return current;
 		}
 
+		@Override // implementation
 		public void remove() {
 			assert wellFormed() : "invariant broken at start of iterator.remove()";
 			// TODO: check that there is something to remove.
