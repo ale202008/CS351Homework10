@@ -470,6 +470,7 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		
 		MyIterator() {
 			// TODO: initialize next to the leftmost node
+			current = null;
 			next = TreeMap.this.firstInTree(dummy);
 			assert wellFormed() : "invariant broken after iterator constructor";
 		}
@@ -524,6 +525,13 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			// (See handout for details.)
 			// After removal, record that there is nothing to remove any more.
 			// Handle versions.
+			if (current == null) throw new IllegalStateException();
+			
+			TreeMap.this.remove(current.key);
+			
+			current = next;
+			colVersion++;
+			
 			assert wellFormed() : "invariant broken at end of iterator.remove()";
 		}
 		
