@@ -368,6 +368,13 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			// TODO: if the tree doesn't contain x, return false
 			// otherwise do a TreeMap remove.
 			// make sure that the invariant is true before returning.
+			assert wellFormed() : "wellFormed failed at the beginning of remove(EntrySet)";
+			
+			if (!TreeMap.this.containsKey(x)) return false;
+			
+			TreeMap.this.remove(x);
+			
+			assert wellFormed() : "wellFormed failed at the beginning of remove(EntrySet)";
 			return true;
 		}
 		
