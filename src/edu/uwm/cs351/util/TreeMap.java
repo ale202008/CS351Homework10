@@ -284,8 +284,18 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 	
 	private Node<K, V> doRemove(Node<K, V> r, Node<K, V> p, Node<K, V> target){
 		if (r == target) {
-			if (r.left == null) return r.right;
-			if (r.right == null) return r.left;
+			if (r.left == null) {
+				if (r.right != null) {
+					r.right.parent = p;
+				}
+				return r.right;
+			}
+			if (r.right == null) {
+				if (r.left != null) {
+					r.left.parent = p;
+				}
+				return r.left;
+			}
 			
 			Node<K, V> t = firstInTree(r.right);
 			t.right = doRemove(r.right, r, t);
@@ -296,10 +306,10 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		}
 		else if (r != null){
 			if (comparator.compare(target.key, r.key) < 0) {
-				r.left = doRemove(r.right, r, target);
+				r.left = doRemove(r.left, r, target);
 			}
 			else {
-				r.right = doRemove(r.left, r, target);
+				r.right = doRemove(r.right, r, target);
 			}
 		}
 
@@ -381,9 +391,11 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 			// make sure that the invariant is true before returning.
 			assert wellFormed() : "wellFormed failed at the beginning of remove(EntrySet)";
 			
-			if (!TreeMap.this.containsKey(x)) return false;
-			
-			TreeMap.this.remove(x);
+			@SuppressWarnings("unchecked")
+			Entry<K, V> temp = (Entry<K, V>) x;
+			if (!TreeMap.this.containsKey(temp.getKey())) return false;
+			if (TreeMap.this.getNode(temp.getKey()).getValue() != temp.getValue()) return false;
+			TreeMap.this.remove(temp.getKey());
 			
 			assert wellFormed() : "wellFormed failed at the beginning of remove(EntrySet)";
 			return true;
