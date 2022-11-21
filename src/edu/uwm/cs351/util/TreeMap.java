@@ -449,6 +449,11 @@ public class TreeMap<K,V>  extends AbstractMap<K,V> {
 		
 		MyIterator() {
 			// TODO: initialize next to the leftmost node
+			Node<K, V> i = dummy;
+			while (i.left != null) {
+				i = i.left;
+			}
+			next = i;
 			assert wellFormed() : "invariant broken after iterator constructor";
 		}
 		
